@@ -45,12 +45,12 @@ st.header("2. Tenant Consumption")
 col_t1, col_t2 = st.columns(2)
 
 with col_t1:
-    st.subheader("Unit 2")
+    st.subheader("Unit 1")
     t1_cl = st.number_input("Controlled Load (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="t1_cl")
     t1_usage = st.number_input("Usage (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="t1_usage")
 
 with col_t2:
-    st.subheader("Unit 3")
+    st.subheader("Unit 2")
     t2_cl = st.number_input("Controlled Load (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="t2_cl")
     t2_usage = st.number_input("Usage (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="t2_usage")
 
@@ -72,8 +72,28 @@ total_usage_cost = total_offpeak_cost + total_peak_cost + total_shoulder_cost
 # Calculate volume-weighted average usage rate
 if total_usage_consumption > 0:
     weighted_avg_usage_rate = total_usage_cost / total_usage_consumption
+    offpeak_proportion = (offpeak_consumption / total_usage_consumption) * 100
+    peak_proportion = (peak_consumption / total_usage_consumption) * 100
+    shoulder_proportion = (shoulder_consumption / total_usage_consumption) * 100
 else:
     weighted_avg_usage_rate = 0
+    offpeak_proportion = 0
+    peak_proportion = 0
+    shoulder_proportion = 0
+
+# Display usage rate proportions
+st.subheader("Usage Rate Breakdown")
+col_prop1, col_prop2, col_prop3 = st.columns(3)
+with col_prop1:
+    st.metric("Off Peak", f"{offpeak_proportion:.1f}%", help=f"${offpeak_rate:.5f}/kWh")
+with col_prop2:
+    st.metric("Peak", f"{peak_proportion:.1f}%", help=f"${peak_rate:.5f}/kWh")
+with col_prop3:
+    st.metric("Shoulder", f"{shoulder_proportion:.1f}%", help=f"${shoulder_rate:.5f}/kWh")
+
+st.caption(f"Weighted Average Usage Rate: ${weighted_avg_usage_rate:.5f}/kWh")
+
+st.divider()
 
 # Total tenant consumption
 total_tenant_cl = t1_cl + t2_cl
@@ -102,7 +122,7 @@ t2_total = t2_cl_charge + t2_usage_charge
 col_c1, col_c2 = st.columns(2)
 
 with col_c1:
-    st.subheader("Unit 2 - Bill Breakdown")
+    st.subheader("Unit 1 - Bill Breakdown")
     st.metric("Total Amount Due", f"${t1_total:.2f}", delta=None)
     
     with st.expander("View Breakdown", expanded=True):
@@ -113,7 +133,7 @@ with col_c1:
         st.write(f"  • Consumption: {t1_usage:.2f} kWh @ ${weighted_avg_usage_rate:.4f}/kWh (weighted avg)")
 
 with col_c2:
-    st.subheader("Unit 3 - Bill Breakdown")
+    st.subheader("Unit 2 - Bill Breakdown")
     st.metric("Total Amount Due", f"${t2_total:.2f}", delta=None)
     
     with st.expander("View Breakdown", expanded=True):
