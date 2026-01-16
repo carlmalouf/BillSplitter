@@ -13,25 +13,25 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("**Controlled Load**")
-    cl_rate = st.number_input("Rate ($/kWh)", min_value=0.0, value=0.32648, step=0.01, key="cl_rate")
-    cl_consumption = st.number_input("Total Consumption (kWh)", min_value=0.0, value=0.0, step=1.0, key="cl_consumption")
+    cl_rate = st.number_input("Rate ($/kWh)", min_value=0.0, value=0.32648, step=0.00001, format="%.5f", key="cl_rate")
+    cl_consumption = st.number_input("Total Consumption (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="cl_consumption")
 
 with col2:
     st.markdown("**Usage - Off Peak**")
-    offpeak_rate = st.number_input("Rate ($/kWh)", min_value=0.0, value=0.41855, step=0.01, key="offpeak_rate")
-    offpeak_consumption = st.number_input("Total Consumption (kWh)", min_value=0.0, value=0.0, step=1.0, key="offpeak_consumption")
+    offpeak_rate = st.number_input("Rate ($/kWh)", min_value=0.0, value=0.41855, step=0.00001, format="%.5f", key="offpeak_rate")
+    offpeak_consumption = st.number_input("Total Consumption (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="offpeak_consumption")
 
 col3, col4 = st.columns(2)
 
 with col3:
     st.markdown("**Usage - Peak**")
-    peak_rate = st.number_input("Rate ($/kWh)", min_value=0.0, value=0.65120, step=0.01, key="peak_rate")
-    peak_consumption = st.number_input("Total Consumption (kWh)", min_value=0.0, value=0.0, step=1.0, key="peak_consumption")
+    peak_rate = st.number_input("Rate ($/kWh)", min_value=0.0, value=0.65120, step=0.00001, format="%.5f", key="peak_rate")
+    peak_consumption = st.number_input("Total Consumption (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="peak_consumption")
 
 with col4:
     st.markdown("**Usage - Shoulder**")
-    shoulder_rate = st.number_input("Rate ($/kWh)", min_value=0.0, value=0.49049, step=0.01, key="shoulder_rate")
-    shoulder_consumption = st.number_input("Total Consumption (kWh)", min_value=0.0, value=0.0, step=1.0, key="shoulder_consumption")
+    shoulder_rate = st.number_input("Rate ($/kWh)", min_value=0.0, value=0.49049, step=0.00001, format="%.5f", key="shoulder_rate")
+    shoulder_consumption = st.number_input("Total Consumption (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="shoulder_consumption")
 
 st.divider()
 
@@ -41,14 +41,14 @@ st.header("2. Tenant Consumption")
 col_t1, col_t2 = st.columns(2)
 
 with col_t1:
-    st.subheader("Tenant 1")
-    t1_cl = st.number_input("Controlled Load (kWh)", min_value=0.0, value=0.0, step=1.0, key="t1_cl")
-    t1_usage = st.number_input("Usage (kWh)", min_value=0.0, value=0.0, step=1.0, key="t1_usage")
+    st.subheader("Unit 2")
+    t1_cl = st.number_input("Controlled Load (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="t1_cl")
+    t1_usage = st.number_input("Usage (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="t1_usage")
 
 with col_t2:
-    st.subheader("Tenant 2")
-    t2_cl = st.number_input("Controlled Load (kWh)", min_value=0.0, value=0.0, step=1.0, key="t2_cl")
-    t2_usage = st.number_input("Usage (kWh)", min_value=0.0, value=0.0, step=1.0, key="t2_usage")
+    st.subheader("Unit 3")
+    t2_cl = st.number_input("Controlled Load (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="t2_cl")
+    t2_usage = st.number_input("Usage (kWh)", min_value=0.0, value=0.0, step=0.001, format="%.3f", key="t2_usage")
 
 st.divider()
 
@@ -123,10 +123,10 @@ st.divider()
 col_c1, col_c2 = st.columns(2)
 
 with col_c1:
-    st.subheader("Tenant 1 - Bill Breakdown")
+    st.subheader("Unit 2 - Bill Breakdown")
     st.metric("Total Amount Due", f"${t1_total:.2f}", delta=None)
     
-    with st.expander("View Breakdown"):
+    with st.expander("View Breakdown", expanded=True):
         st.write(f"**Controlled Load:** ${t1_cl_charge:.2f}")
         st.write(f"  • Consumption: {t1_cl:.2f} kWh @ ${cl_rate:.4f}/kWh")
         if total_tenant_cl > 0:
@@ -138,10 +138,10 @@ with col_c1:
             st.write(f"  • Share: {(t1_usage/total_tenant_usage)*100:.1f}%")
 
 with col_c2:
-    st.subheader("Tenant 2 - Bill Breakdown")
+    st.subheader("Unit 3 - Bill Breakdown")
     st.metric("Total Amount Due", f"${t2_total:.2f}", delta=None)
     
-    with st.expander("View Breakdown"):
+    with st.expander("View Breakdown", expanded=True):
         st.write(f"**Controlled Load:** ${t2_cl_charge:.2f}")
         st.write(f"  • Consumption: {t2_cl:.2f} kWh @ ${cl_rate:.4f}/kWh")
         if total_tenant_cl > 0:
@@ -152,9 +152,4 @@ with col_c2:
         if total_tenant_usage > 0:
             st.write(f"  • Share: {(t2_usage/total_tenant_usage)*100:.1f}%")
 
-# Validation warnings
-if total_tenant_cl > cl_consumption:
-    st.warning(f"⚠️ Warning: Tenant controlled load ({total_tenant_cl:.0f} kWh) exceeds total ({cl_consumption:.0f} kWh)")
 
-if total_tenant_usage > total_usage_consumption:
-    st.warning(f"⚠️ Warning: Tenant usage ({total_tenant_usage:.0f} kWh) exceeds total ({total_usage_consumption:.0f} kWh)")
