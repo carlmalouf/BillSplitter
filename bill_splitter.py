@@ -99,20 +99,12 @@ st.divider()
 total_tenant_cl = t1_cl + t2_cl
 total_tenant_usage = t1_usage + t2_usage
 
-# Calculate charges for each tenant
-if total_tenant_cl > 0:
-    t1_cl_charge = (t1_cl / total_tenant_cl) * total_cl_cost
-    t2_cl_charge = (t2_cl / total_tenant_cl) * total_cl_cost
-else:
-    t1_cl_charge = 0
-    t2_cl_charge = 0
+# Calculate charges for each tenant using direct multiplication
+t1_cl_charge = t1_cl * cl_rate
+t2_cl_charge = t2_cl * cl_rate
 
-if total_tenant_usage > 0:
-    t1_usage_charge = (t1_usage / total_tenant_usage) * total_usage_cost
-    t2_usage_charge = (t2_usage / total_tenant_usage) * total_usage_cost
-else:
-    t1_usage_charge = 0
-    t2_usage_charge = 0
+t1_usage_charge = t1_usage * weighted_avg_usage_rate
+t2_usage_charge = t2_usage * weighted_avg_usage_rate
 
 # Total charges
 t1_total = t1_cl_charge + t1_usage_charge
@@ -126,12 +118,10 @@ with col_c1:
     st.metric("Total Amount Due", f"${t1_total:.2f}", delta=None)
     
     with st.expander("View Breakdown", expanded=True):
-        t1_cl_direct = t1_cl * cl_rate
-        st.write(f"**Controlled Load:** ${t1_cl_direct:.2f}")
+        st.write(f"**Controlled Load:** ${t1_cl_charge:.2f}")
         st.write(f"  • Consumption: {t1_cl:.2f} kWh @ ${cl_rate:.4f}/kWh")
         
-        t1_usage_direct = t1_usage * weighted_avg_usage_rate
-        st.write(f"**Usage:** ${t1_usage_direct:.2f}")
+        st.write(f"**Usage:** ${t1_usage_charge:.2f}")
         st.write(f"  • Consumption: {t1_usage:.2f} kWh @ ${weighted_avg_usage_rate:.4f}/kWh (weighted avg)")
 
 with col_c2:
@@ -139,11 +129,9 @@ with col_c2:
     st.metric("Total Amount Due", f"${t2_total:.2f}", delta=None)
     
     with st.expander("View Breakdown", expanded=True):
-        t2_cl_direct = t2_cl * cl_rate
-        st.write(f"**Controlled Load:** ${t2_cl_direct:.2f}")
+        st.write(f"**Controlled Load:** ${t2_cl_charge:.2f}")
         st.write(f"  • Consumption: {t2_cl:.2f} kWh @ ${cl_rate:.4f}/kWh")
         
-        t2_usage_direct = t2_usage * weighted_avg_usage_rate
-        st.write(f"**Usage:** ${t2_usage_direct:.2f}")
+        st.write(f"**Usage:** ${t2_usage_charge:.2f}")
         st.write(f"  • Consumption: {t2_usage:.2f} kWh @ ${weighted_avg_usage_rate:.4f}/kWh (weighted avg)")
 
