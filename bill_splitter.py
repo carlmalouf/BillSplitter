@@ -126,10 +126,12 @@ with col_c1:
     st.metric("Total Amount Due", f"${t1_total:.2f}", delta=None)
     
     with st.expander("View Breakdown", expanded=True):
-        st.write(f"**Controlled Load:** ${t1_cl_charge:.2f}")
+        t1_cl_direct = t1_cl * cl_rate
+        st.write(f"**Controlled Load:** ${t1_cl_direct:.2f}")
         st.write(f"  • Consumption: {t1_cl:.2f} kWh @ ${cl_rate:.4f}/kWh")
         
-        st.write(f"**Usage:** ${t1_usage_charge:.2f}")
+        t1_usage_direct = t1_usage * weighted_avg_usage_rate
+        st.write(f"**Usage:** ${t1_usage_direct:.2f}")
         st.write(f"  • Consumption: {t1_usage:.2f} kWh @ ${weighted_avg_usage_rate:.4f}/kWh (weighted avg)")
 
 with col_c2:
@@ -137,9 +139,11 @@ with col_c2:
     st.metric("Total Amount Due", f"${t2_total:.2f}", delta=None)
     
     with st.expander("View Breakdown", expanded=True):
-        st.write(f"**Controlled Load:** ${t2_cl_charge:.2f}")
+        t2_cl_direct = t2_cl * cl_rate
+        st.write(f"**Controlled Load:** ${t2_cl_direct:.2f}")
         st.write(f"  • Consumption: {t2_cl:.2f} kWh @ ${cl_rate:.4f}/kWh")
         
-        st.write(f"**Usage:** ${t2_usage_charge:.2f}")
+        t2_usage_direct = t2_usage * weighted_avg_usage_rate
+        st.write(f"**Usage:** ${t2_usage_direct:.2f}")
         st.write(f"  • Consumption: {t2_usage:.2f} kWh @ ${weighted_avg_usage_rate:.4f}/kWh (weighted avg)")
 
